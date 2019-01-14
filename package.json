@@ -2,7 +2,10 @@
   "name": "component-base",
   "version": "0.1.0",
   "private": true,
-  "dependencies": {
+  "peerDependencies": {
+    "react": "^16.7.0"
+  },
+  "devDependencies": {
     "@babel/core": "7.1.6",
     "@svgr/webpack": "2.4.1",
     "babel-core": "7.0.0-bridge.0",
