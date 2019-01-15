@@ -14,12 +14,13 @@ export default class ProtectedRoute extends Component {
   }
 
   render() {
-    return <Route render={this.renderComponent} />;
+    return <Route {...this.props} render={this.renderComponent} />;
   }
 }
 
 ProtectedRoute.propTypes = {
   component: PropTypes.oneOfType([PropTypes.node, PropTypes.string]).isRequired,
-  hasAuth: PropTypes.bool.isRequired,
   fallbackPath: PropTypes.string.isRequired,
+  hasAuth: PropTypes.bool.isRequired,
+  path: PropTypes.string.isRequired,
 };

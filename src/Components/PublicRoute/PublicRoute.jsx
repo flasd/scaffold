@@ -14,11 +14,12 @@ export default class PublicRoute extends Component {
   }
 
   render() {
-    return <Route render={this.renderComponent} />;
+    return <Route {...this.props} render={this.renderComponent} />;
   }
 }
 
 PublicRoute.propTypes = {
   component: PropTypes.oneOfType([PropTypes.node, PropTypes.string]).isRequired,
   fallbackPath: PropTypes.string.isRequired,
+  path: PropTypes.string.isRequired,
 };

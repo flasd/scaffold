@@ -113,14 +113,18 @@ export default class AuthProvider extends Component {
 
   render() {
     const { children } = this.props;
-    const safeValue = Object.freeze(Object.assign({}, this.state, {}));
+    const safeValue = Object.freeze(
+      Object.assign({}, this.state, {
+        login: this.login,
+        logout: this.logout,
+      }),
+    );
 
     return (
       <AuthContext.Provider value={safeValue}>{children}</AuthContext.Provider>
     );
   }
 }
-
 
 AuthProvider.propTypes = {
   children: PropTypes.oneOfType([PropTypes.node, PropTypes.string]).isRequired,
