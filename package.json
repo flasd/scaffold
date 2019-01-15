@@ -1,11 +1,7 @@
 {
-  "name": "component-base",
-  "version": "0.1.0",
-  "private": true,
+  "name": "@flasd/scaffold",
+  "version": "1.0.0",
   "main": "./build/index.js",
-  "peerDependencies": {
-    "react": "^16.7.0"
-  },
   "devDependencies": {
     "@babel/core": "7.1.6",
     "@svgr/webpack": "2.4.1",
@@ -18,16 +14,18 @@
     "bfj": "6.1.1",
     "case-sensitive-paths-webpack-plugin": "2.1.2",
     "chalk": "2.4.1",
+    "cross-env": "^5.2.0",
     "css-loader": "1.0.0",
     "dotenv": "6.0.0",
     "dotenv-expand": "4.2.0",
-    "eslint": "5.6.0",
+    "eslint": "^5.12.0",
+    "eslint-config-airbnb": "^17.1.0",
     "eslint-config-react-app": "^3.0.6",
     "eslint-loader": "2.1.1",
     "eslint-plugin-flowtype": "2.50.1",
-    "eslint-plugin-import": "2.14.0",
-    "eslint-plugin-jsx-a11y": "6.1.2",
-    "eslint-plugin-react": "7.11.1",
+    "eslint-plugin-import": "^2.14.0",
+    "eslint-plugin-jsx-a11y": "^6.1.2",
+    "eslint-plugin-react": "^7.12.3",
     "file-loader": "2.0.0",
     "fork-ts-checker-webpack-plugin-alt": "0.4.14",
     "fs-extra": "7.0.0",
@@ -58,8 +56,10 @@
     "workbox-webpack-plugin": "3.6.3"
   },
   "scripts": {
+    "build": "npm run quality-check && node scripts/build.js",
+    "lint": "eslint --ext .js --ext .jsx src/",
+    "quality-check": "cross-env CI=true && npm run lint",
     "start": "node scripts/start.js",
-    "build": "node scripts/build.js",
     "test": "node scripts/test.js"
   },
   "eslintConfig": {
@@ -116,5 +116,14 @@
     "presets": [
       "react-app"
     ]
+  },
+  "dependencies": {
+    "@flasd/smart-error": "^1.1.0",
+    "fingerprintjs2": "^2.0.6",
+    "history": "^4.7.2",
+    "prop-types": "^15.6.2",
+    "react-router-dom": "^4.3.1",
+    "react": "^16.7.0",
+    "react-dom": "^16.7.0"
   }
 }

@@ -1,9 +1,16 @@
-import React from "react";
-import Component from "./Component";
+import Scaffold from './Scaffold';
+import ProtectedRoute from './Components/ProtectedRoute';
+import PublicRoute from './Components/PublicRoute';
+import withAuth from './Components/withAuth';
+import withTheme from './Components/withTheme';
+import history from './Services/history';
 
-if (process.env.NODE_ENV === "development") {
-  const ReactDOM = require("react-dom");
-  ReactDOM.render(<Component />, document.getElementById("root"));
-}
+export {
+  history,
+  ProtectedRoute,
+  PublicRoute,
+  withAuth,
+  withTheme,
+};
 
-export default Component;
+export default Scaffold;
