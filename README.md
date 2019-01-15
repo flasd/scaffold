@@ -1,68 +1,175 @@
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+Scaffold
+Builds AuthContext, ThemeContext & RouterContext into a app;
 
-## Available Scripts
+### Installation
 
-In the project directory, you can run:
+Install the latest version from NPM with the following command:
 
-### `npm start`
+```sh
+npm install @flasd/scaffold
+```
 
-Runs the app in the development mode.<br>
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+### Usage
 
-The page will reload if you make edits.<br>
-You will also see any lint errors in the console.
+To start using the Scaffold functionality, you'll need to wrap your app in it.
 
-### `npm test`
+```javascript
+import Scaffold from "@flasd/scaffold";
 
-Launches the test runner in the interactive watch mode.<br>
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+export default function App() {
+  return (
+    <Scaffold
+      theme={
+        {
+          /* theme customization */
+        }
+      }
+    >
+      Your components
+    </Scaffold>
+  );
+}
+```
 
-### `npm run build`
+Scaffold wraps your app with a ThemeContext, AuthContext and a Router from `react-router-dom`;
 
-Builds the app for production to the `build` folder.<br>
-It correctly bundles React in production mode and optimizes the build for the best performance.
+Also, it exports a few usefull components and decorators.
 
-The build is minified and the filenames include the hashes.<br>
-Your app is ready to be deployed!
+#### history
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+This module is used to control routing using the `react-router-dom` as its context. Check its docs at [this url](https://www.npmjs.com/package/history).
 
-### `npm run eject`
+```javascript
+import { history } from "@flasd/scaffold";
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+history.push("/my-route");
+```
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+#### ProtectedRoute
 
-Instead, it will copy all the configuration files and the transitive dependencies (Webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+Instrument routes so that they won't show up if the user is not logged-in.
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+```javascript
+import { Switch } from "react-router-dom";
+import { ProtectedRoute } from "@flasd/scaffold";
 
-## Learn More
+export default function App() {
+  return (
+    <Switch>
+      <ProtectedRoute
+        path="/my-route"
+        component={MyComponent}
+        fallbackPath="/login"
+      />
+    </Switch>
+  );
+}
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+// It has the following prop-types
+ProtectedRoute.propTypes = {
+  component: PropTypes.oneOfType([PropTypes.node, PropTypes.string]).isRequired,
+  fallbackPath: PropTypes.string.isRequired,
+  path: PropTypes.string.isRequired
+};
+```
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+#### Public Route
 
-### Code Splitting
+Same thing as ProtectedRoute but does the oposite. If it finds 'login' in the url it will redirect the user to a fallback path.
 
-This section has moved here: https://facebook.github.io/create-react-app/docs/code-splitting
+```javascript
+import { Switch } from "react-router-dom";
+import { PublicRoute } from "@flasd/scaffold";
 
-### Analyzing the Bundle Size
+export default function App() {
+  return (
+    <Switch>
+      <PublicRoute
+        path="/login"
+        component={Login}
+        fallbackPath="/home"
+      />
+    </Switch>
+  );
+}
 
-This section has moved here: https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size
+// It has the following prop-types
+PublicRoute.propTypes = {
+  component: PropTypes.oneOfType([PropTypes.node, PropTypes.string]).isRequired,
+  fallbackPath: PropTypes.string.isRequired,
+  path: PropTypes.string.isRequired
+};
+```
 
-### Making a Progressive Web App
+#### withAuth
 
-This section has moved here: https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app
+Decorator to inject auth state and functions into a component. The AuthContext manages authentication internaly and exposes two methods to interface with your control: `login()` & `logout()`.
 
-### Advanced Configuration
+```javascript
+import { withAuth } from '@flasd/scaffold';
 
-This section has moved here: https://facebook.github.io/create-react-app/docs/advanced-configuration
+export function MyComponent(props) {
+  const {
+     user,
+     hasAuth,
+     fingerprint,
+     login,
+     logout,
+  } = props;
 
-### Deployment
+  return <div>Hello</div>;
+}
 
-This section has moved here: https://facebook.github.io/create-react-app/docs/deployment
+export default withAuth()(MyComponent);
+```
 
-### `npm run build` fails to minify
+Ok, let's break it down:
+##### login
+The login function should be called after you authenticated your user with your backend. It spectsa JWT token with a paylaod or just an Object, that follows the following schema:
 
-This section has moved here: https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify
+```typescript
+type User = {
+  uid: !String,
+  name: !String,
+  role: !String,
+}
+```
+
+##### logout
+
+Logs the user out. Simple as that.
+
+##### fingerprint
+
+The first time your app runs on a user machine, we create a fingerprint from he's/she's machine. You can use this to ensure users are not moving tokens around.
+
+##### user & hasAuth
+
+`user` follows the same schema as shown above. `hasAuth` is a boolean.
+
+#### withTheme
+
+Inject theme variables into any component:
+
+```javascript
+import { withTheme } from '@flasd/scaffold';
+
+export function MyComponent(props) {
+  const {
+    mainColor,
+    accentColor,
+    logoUrl,
+    fontFamily,
+    baseFontSize,
+  } = props;
+
+  return <div>Hello</div>;
+}
+
+export default withTheme()(MyComponent);
+```
+All properties are strings and the defaults are just empty strings. You can overide them globally when you render `<Scafold />` or your can pass a object to `withTheme` with the properties you wish to overide.
+
+### Copyright e Licença
+
+Copyright (c) 2019 [Marcel de Oliveira Coelho](https://github.com/flasd) under the [MIT License](https://github.com/flasd/scaffold/blob/master/LICENSE.md). Go Crazy. :rocket:
